@@ -34,8 +34,6 @@ router.post('/', veryfy, async (req, res) => {
 router.get('/',veryfy, async (req, res) => {
     try {
         const currentUserId = (jwt_decode(req.header('auth-token')))._id;
-        console.log((jwt_decode(req.header('auth-token')))._id);
-
         const currentUserRooms = await room.find({users: currentUserId});
         res.json({rooms: currentUserRooms});        
     } catch(err) {
@@ -84,12 +82,21 @@ router.post('/addUser/:id', veryfy, middlewear.getRoom ,async (req, res) => {
     const roomParent = res.room;
     roomParent.users.push({_id: user._id});
     roomParent.save();
-    return res.status(200).send('User has been added succesfully!');
+    return res.status(200).send({message:'User has been added succesfully!'});
 });
 
 // Delete user from room by userID and roomID
+router.delete('/:roomId/user/:userId', veryfy, async (req, res) => {
 
-
+    try {
+        const deleteRoom = await room.updateOne({_id: req.params.roomId}, { $pullAll: {users: [req.params.userId] }});
+        const user = await AuthModel.updateOne({_id: req.params.userId}, { $pullAll: {rooms: [req.params.roomId]}});
+    } catch(err) {
+        return res.status(400).send({message: err.message});
+    }
+    
+    return res.status(200).send({message: 'Usunieto!'});
+});
 
 
 module.exports = router;
