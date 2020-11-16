@@ -28,5 +28,16 @@ router.post('/', veryfy, async (req, res) => {
     }
 });
 
+// Get all transactions from room by roomID
+
+router.get("/:id", veryfy, async (req, res) => {
+    try {
+        const transactionRoom = await transactionsModel.find({room: req.params.id});
+        return res.status(200).json(transactionRoom);
+        
+    } catch(err) {
+        res.status(400).json({message: err.message});
+    }
+});
 
 module.exports = router;
