@@ -125,7 +125,7 @@ router.get("/barChartData/:roomId", veryfy, async (req,res) => {
                         totalExpense: {$sum: { "$cond": [{ "$eq": ["$income", false] }, "$transactionValue", 0] }},
                 }
             }
-            ]); 
+            ]).sort('_id'); 
 
         return res.status(200).json(transactionRoom);
     } catch(err) {

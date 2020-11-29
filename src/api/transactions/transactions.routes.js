@@ -89,4 +89,16 @@ router.get("/filteredTransactions/:id", veryfy, async (req, res) => {
     }
 });
 
+
+//Delete transaction by transactionID
+
+router.delete("/:id", veryfy, middlewear.getTransaction, async (req, res) => {
+    try {
+        await res.transaction.remove();
+        res.json({message: 'Transaction has been deleted'});
+    } catch(err) {
+        res.status(500).send({message: err.message});
+    }
+});
+
 module.exports = router;
