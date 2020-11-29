@@ -5,6 +5,7 @@ const veryfy = require('../../config/verifyToken');
 const room = require('./rooms.model');
 const AuthModel = require("../auth/auth.model");
 var middlewear = require('../../util/middlewares');
+const transactionsModel = require('../transactions/transactions.model');
 
 // Create new room
 router.post('/', veryfy, async (req, res) => {
@@ -98,5 +99,38 @@ router.delete('/:roomId/user/:userId', veryfy, async (req, res) => {
     return res.status(200).send({message: 'Usunieto!'});
 });
 
+
+// Get Pie Chart by category data
+router.get("/pieChartData/:roomId", veryfy, async (req,res) => {
+    try {
+        const transactionRoom = await transactionsModel.aggregate([{ $match : { room : req.params.roomId}} ,{$group: {_id: "$category", total: {$sum: "$transactionValue"}}}]); 
+
+        return res.status(200).json(transactionRoom);
+    } catch(err) {
+        return res.status(400).send({message: err.message});
+    }
+});
+
+
+//Get Bar Chart by date data
+router.get("/barChartData/:roomId", veryfy, async (req,res) => {
+    try {
+        const transactionRoom = await transactionsModel.aggregate([
+            {
+                 $match : { room : req.params.roomId}} ,
+                 {
+                     $group: {
+                        _id: { $month: "$transactionDate"}, 
+                        totalIncome: {$sum: { "$cond": [{ "$eq": ["$income", true] }, "$transactionValue", 0] }},
+                        totalExpense: {$sum: { "$cond": [{ "$eq": ["$income", false] }, "$transactionValue", 0] }},
+                }
+            }
+            ]); 
+
+        return res.status(200).json(transactionRoom);
+    } catch(err) {
+        return res.status(400).send({message: err.message});
+    }
+});
 
 module.exports = router;

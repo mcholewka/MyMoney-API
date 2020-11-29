@@ -40,4 +40,53 @@ router.get("/:id", veryfy, async (req, res) => {
     }
 });
 
+// Get filtered transactions from room by roomID
+
+router.get("/filteredTransactions/:id", veryfy, async (req, res) => {
+    try {
+
+
+        if(req.query.expense=="true" && req.query.income=="true") {
+            // if(req.query.category=="all") {
+                const transactionRoom = await transactionsModel.find({room: req.params.id});
+                return res.status(200).json(transactionRoom);
+            // }
+            // if(req.query.category!="all") {
+            //     const transactionRoom = await transactionsModel.find({room: req.params.id, category: req.query.category});
+            //     return res.status(200).json(transactionRoom);
+            // } 
+        }
+
+        if(req.query.expense=="true" && req.query.income=="false") {
+            // if(req.query.category=="all") {
+                const transactionRoom = await transactionsModel.find({room: req.params.id, income: false});
+                return res.status(200).json(transactionRoom);
+            // }
+            // if(req.query.category!="all") {
+            //     const transactionRoom = await transactionsModel.find({room: req.params.id, income: false , category: req.query.category});
+            //     return res.status(200).json(transactionRoom);
+            // } 
+        }
+
+        if(req.query.expense=="false" && req.query.income=="true") {
+            // if(req.query.category=="all") {
+                const transactionRoom = await transactionsModel.find({room: req.params.id, income: true});
+                return res.status(200).json(transactionRoom);
+            // }
+            // if(req.query.category!="all") {
+            //     const transactionRoom = await transactionsModel.find({room: req.params.id, income: true, category: req.query.category});
+            //     return res.status(200).json(transactionRoom);
+            // } 
+        }
+
+        if(req.query.expense=="false" && req.query.income=="false") {
+            const transactionRoom = null;
+            return res.status(200).json(transactionRoom);
+        }
+
+    } catch(err) {
+
+    }
+});
+
 module.exports = router;

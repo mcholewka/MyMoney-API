@@ -31,5 +31,11 @@ router.get('/:id', veryfy, async (req,res) => {
     return res.status(200).json(getCategorys);
 });
 
+router.get("/getSingleCategory/:id", veryfy, async (req, res)=> {
+    const getCategory = await categorysModel.findById(req.params.id);
+
+    return res.status(200).json(getCategory);
+})
+
 
 module.exports = router;
