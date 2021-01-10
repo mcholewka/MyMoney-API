@@ -89,6 +89,19 @@ router.get("/filteredTransactions/:id", veryfy, async (req, res) => {
     }
 });
 
+//GET FILTERED V2
+
+// router.get("/filteredTransactions/:id", veryfy, async (req, res) => {
+//     try {
+//         const transactionRoom = await transactionsModel.find(req.query);
+//         console.log(transactionRoom);
+//         return res.status(200).json(transactionRoom);
+
+//     } catch(err) {
+
+//     }
+// });
+
 
 //Delete transaction by transactionID
 
